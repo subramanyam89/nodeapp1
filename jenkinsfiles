@@ -1,0 +1,37 @@
+node{
+   def app
+   
+   stage("clone repostitory"){
+   /*cloning the repostitory to our markspce*/
+   
+   checkout scm
+   }
+   
+   stage("build image"){
+   /*this build the actual image*/
+   
+   app * docker.build("subramanyamsetty/nodeapp")
+
+   }
+   
+   stage("Test image*){
+   
+   app.inside{
+		echo "tests passed"
+		}
+	}
+	
+	stage("push image"){
+	/*
+		you would need to first register with dockerhub before you can push images to your account
+		*/
+
+   docker.withregistery("https://registery.hub.docker.com","docker.hub"){
+   app.push("${evn.BUILD_NUMBER}")
+   app.push("latest")
+}
+	
+		echo"trying to push Docker build to Dockerhub"
+	}
+  }
+  
